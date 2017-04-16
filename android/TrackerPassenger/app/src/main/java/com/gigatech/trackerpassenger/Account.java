@@ -7,7 +7,7 @@ import com.gigatech.trackerpassenger.models.User;
 
 public class Account {
 
-    private static final String SERVER_BASE_URL = "http://192.168.2.102:8000";
+    private static final String SERVER_BASE_URL = "http://ec2-52-89-216-21.us-west-2.compute.amazonaws.com";
     private static final String APP_PREFS = "track_transit_passenger";
 
     private static Account instance;

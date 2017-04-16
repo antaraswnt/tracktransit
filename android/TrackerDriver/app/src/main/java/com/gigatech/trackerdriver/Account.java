@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 public class Account {
 
-    private static final String SERVER_BASE_URL = "http://192.168.2.102:8000";
+    private static final String SERVER_BASE_URL = "http://ec2-52-89-216-21.us-west-2.compute.amazonaws.com";
     private static final String APP_ADMIN_PIN = "1248";
     private static final String APP_PREFS = "track_transit";
     private static final String PREF_VEHICLE_NUMBER = "vehicle_number";

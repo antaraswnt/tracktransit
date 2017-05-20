@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -39,7 +41,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Dialog mDialog;
 
     private GoogleMap mMap;
-    private HashMap<Integer, Marker> vehicleMap;
+    private ConcurrentHashMap<Integer, Marker> vehicleMap;
     private Handler msgHandler;
 
     @Override
@@ -73,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
 
-        vehicleMap = new HashMap<>();
+        vehicleMap = new ConcurrentHashMap<>();
         mRoute = (TextView) findViewById(R.id.txt_search);
 
         mRoute.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +123,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void drawVehicle(Vehicle v) {
+        Log.d(TAG, "Drawing vehicle: " + v.vehicle_id);
+
         if (mMap == null) return;
         LatLng l = new LatLng(v.latitude, v.longitude);
 
@@ -142,9 +146,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (vehicle_marker != null) {
             vehicle_marker.remove();
         }
+        vehicleMap.remove(vehicle_id);
     }
 
     public void renderVehicles(Vehicle[] vehicles) {
+        Log.d(TAG, "Total vehicles available: " + vehicles.length);
+
         HashMap<Integer,Vehicle> vs = new HashMap<>();
         for (Vehicle v : vehicles) {
             vs.put(v.vehicle_id, v);
@@ -188,8 +195,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == ROUTE_SELECT) {
             if (resultCode == RESULT_OK) {
                 String route_number = data.getStringExtra(RouteActivity.ROUTE_DATA);
+                if (route_number.equals("")) {
+                    route_number = null;
+                }
                 TrackService.getInstance().setRoute(route_number);
-                if (route_number == null || route_number.equals("")) {
+                if (route_number == null) {
                     mRoute.setText(getString(R.string.near_me));
                 } else {
                     mRoute.setText(getString(R.string.with_number) + " " + route_number);

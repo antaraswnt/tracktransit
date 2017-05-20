@@ -35,6 +35,12 @@ def vehicle_login(request):
             vs.updated_at = datetime.now()
             vs.status = STATUS_LOGGED_IN
             vs.save()
+        else:
+            vs = vss[0]
+            vs.route_number = r.route.route_number
+            vs.updated_at = datetime.now()
+            vs.status = STATUS_LOGGED_IN
+            vs.save()
 
         return HttpResponse(json.dumps({'vehicle_id': vehicle_id, 'route_number': r.route.route_number}), content_type='application/json')
     except:

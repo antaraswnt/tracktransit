@@ -145,11 +145,11 @@ def vehicles(request):
         from vehicle_vehiclestatus where ST_Distance(ST_Point(%f, %f), ST_Point(longitude, latitude), false) < %f
         and ((extract('epoch' from current_timestamp)) - extract('epoch' from updated_at)) < 5*60
         and status = 'logged_in'
-        order by distance_in_meters desc
+        order by distance_in_meters
         limit 100
         '''
 
-        q = query % (longitude, latitude, longitude, latitude, 1000)
+        q = query % (longitude, latitude, longitude, latitude, 5000)
 
         if route is not None:
             q = '''select vehicle_id, route_number, latitude, longitude
